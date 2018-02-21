@@ -18,9 +18,12 @@ server.get('/', function(req, res) {
 
 server.post('/api/friends', function(req, res) {
   const friendInformation = req.body;
-  const { firstName, lastName, age } = req.body; // Age needs requirement 1-20
 
-  if (firstName && lastName && age) {
+  if (
+    friendInformation.firstName &&
+    friendInformation.lastName &&
+    friendInformation.age
+  ) {
     const friend = new Friend(friendInformation); // mongoose document
     friend
       .save() // returns a promise
@@ -34,7 +37,25 @@ server.post('/api/friends', function(req, res) {
       });
   } else {
     res.status(500).json({
-      errorMessage: 'Please provide First name, Last name, and Age for Friends'
+      errorMessage:
+        'Please provide First name, Last name, and an Age between 1-120 for Friends'
+    });
+  }
+  if (friendInformation.age >= 1 && friendInformation.age <= 120) {
+    const friend = new Friend(friendInformation); // mongoose document
+    friend
+      .save() // returns a promise
+      .then(savedFriend => {
+        res.status(201).json(savedFriend);
+      })
+      .catch(error => {
+        res.status(500).json({
+          error: 'There was an error while saving the Friend to the Database'
+        });
+      });
+  } else {
+    res.status(500).json({
+      errorMessage: 'Age must be a whole number between 1 and 120'
     });
   }
 });
