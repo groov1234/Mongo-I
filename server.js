@@ -18,7 +18,7 @@ server.get('/', function(req, res) {
 
 server.post('/api/friends', function(req, res) {
   const friendInformation = req.body;
-  const { firstName, lastName, age } = req.body;
+  const { firstName, lastName, age } = req.body; // Age needs requirement 1-20
 
   if (firstName && lastName && age) {
     const friend = new Friend(friendInformation); // mongoose document
